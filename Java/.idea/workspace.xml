@@ -36,7 +36,7 @@
       <file leaf-file-name="PlayPass.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/PlayPass.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4632238">
+            <state vertical-scroll-proportion="0.9796557">
               <caret line="49" column="52" selection-start-line="49" selection-start-column="52" selection-end-line="49" selection-end-column="52" />
               <folding />
             </state>
@@ -579,12 +579,12 @@
       <updated>1474427787453</updated>
       <workItem from="1474427808765" duration="2807000" />
       <workItem from="1474435746570" duration="265000" />
-      <workItem from="1474436080956" duration="8000" />
+      <workItem from="1474436080956" duration="357000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3080000" />
+    <option name="totallyTimeSpent" value="3429000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="736" extended-state="6" />
@@ -653,7 +653,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/PlayPass.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4632238">
+        <state vertical-scroll-proportion="0.9796557">
           <caret line="49" column="52" selection-start-line="49" selection-start-column="52" selection-end-line="49" selection-end-column="52" />
           <folding />
         </state>
