@@ -7,6 +7,7 @@ public class CaesarCipher {
     String userInput;
     String encryptedInput = "";
     String decryptedInput = "";
+    boolean forward = true;
     int shiftNum;
 
     public CaesarCipher(){
@@ -24,6 +25,12 @@ public class CaesarCipher {
         return this.userInput;
     }
 
+    //Sets the shift forward if true or backwards if false
+    public void setForward(boolean tf){ this.forward = tf; }
+
+    //Gets the boolean to see if the encryption will shift forwards or backwards
+    public boolean getForward(){ return this.forward; }
+
     //Sets the number of shifts for the Caesar Cipher
     public void setShiftNum(int shiftNum){ this.shiftNum = shiftNum; }
 
@@ -35,32 +42,26 @@ public class CaesarCipher {
         // The string that will get encrypted
         String substr = "";
         //The encrypted string above but in reverse
-        String reverseStr = "";
+        //String reverseStr = "";
         char ch;
         for(int i = 0; i < s.length(); i++){
             ch = Character.toLowerCase(s.charAt(i));
-            if((int) ch > 96){
+            if((int) ch > 96 && this.forward == true){
                 if ((int) ch + n > 122)
                     substr = substr + (char) ((int) (ch + n - 26));
                 else
                     substr = substr + (char) ((int) (ch + n));
             }
+            else if((int) ch > 96 && this.forward == false){
+                if((int) ch - n < 97)
+                    substr = substr + (char) ((int) (ch - n + 26));
+                else
+                    substr = substr + (char) ((int) (ch - n));
+            }
             else{
                 //Makes sure that the complement of the numbers in the message is changed
                 //i.e if the message contains a "5"
-                switch((int) ch){
-                    case 48: substr = substr + (char) 57; break;
-                    case 49: substr = substr + (char) 56; break;
-                    case 50: substr = substr + (char) 55; break;
-                    case 51: substr = substr + (char) 54; break;
-                    case 52: substr = substr + (char) 53; break;
-                    case 53: substr = substr + (char) 52; break;
-                    case 54: substr = substr + (char) 51; break;
-                    case 55: substr = substr + (char) 50; break;
-                    case 56: substr = substr + (char) 49; break;
-                    case 57: substr = substr + (char) 48; break;
-                    default: substr = substr + ch;
-                }
+                substr = substr + ch;
             }
         }
         /*for(int i = substr.length()-1; i >= 0; i--){
@@ -80,11 +81,17 @@ public class CaesarCipher {
         char ch;
         for(int i = 0; i < this.encryptedInput.length(); i++){
             ch = this.encryptedInput.charAt(i);
-            if((int) ch > 96){
+            if((int) ch > 96 && this.forward == true){
                 if ((int) ch - getShiftNum() < 97)
                     substr = substr + (char) ((int) (ch - getShiftNum() + 26));
                 else
                     substr = substr + (char) ((int) (ch - getShiftNum()));
+            }
+            else if((int) ch > 96 && this.forward == false){
+                if ((int) ch + getShiftNum() > 122)
+                    substr = substr + (char) ((int) (ch + getShiftNum() - 26));
+                else
+                    substr = substr + (char) ((int) (ch + getShiftNum()));
             }
             else
                 substr = substr + ch;
@@ -98,9 +105,14 @@ public class CaesarCipher {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter a sentence or message:");
         String s = scan.nextLine();
+        System.out.println("Shift forwards?");
+        boolean b = scan.nextBoolean();
+        cc.setForward(b);
         System.out.println("How many shifts would you like(number): ");
         int n = scan.nextInt();
+        System.out.println("Encrypted Message: ");
         cc.encryptInput(s, n);
+        System.out.println("\nDecrypted Message: ");
         cc.decryptInput();
     }
 }
