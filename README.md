@@ -1,7 +1,7 @@
 # Coding Every Day
 
-##Although, the name suggest I code everyday, it might not show that I have pushed or updated my repository, however, I do actually code every day which shows on my Hackerrank profile 
-( https://www.hackerrank.com/yulppuma ).
+##Although, the name suggest I code everyday, it might not show that I have pushed or updated my repository, however, I do actually code every day which shows on my Hackerrank profile. 
+( https://www.hackerrank.com/yulppuma )
 
 ### Fair warning! This is my first README.md so it clearly needs work. Thank you, if you took the time to read everything in this README.
 
