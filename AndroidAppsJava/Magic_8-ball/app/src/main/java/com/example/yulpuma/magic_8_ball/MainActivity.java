@@ -10,8 +10,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+    //Not using
     public final static String EXTRA_MESSAGE = "com.example.magic_8_ball.MESSAGE";
-    String hello;
+    //String hello;
     Button mybtn;
     TextView txt;
     String[] arr;
@@ -51,20 +52,5 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //Currently not using
-    public void onClickB(View view){
-        txt.setText(hello);
-    }
 
-    //Another function that copies input text
-    public void sendMessage(View view) {
-        //Does something on click
-        Intent intent = new Intent (this, DisplayMessageActivity.class);
-        EditText editText = (EditText) findViewById(R.id.edit_message);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-
-
-    }
 }
