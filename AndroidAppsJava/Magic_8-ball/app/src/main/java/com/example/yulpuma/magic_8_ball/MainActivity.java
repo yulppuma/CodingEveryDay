@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor senAccelerometer;
     private long lastUpdate = 0;
     private float last_x, last_y, last_z;
-    private static final int SHAKE_THRESHOLD = 800;
+    private static final int SHAKE_THRESHOLD = 850;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,15 +58,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
 
 
-        mybtn = (Button) findViewById(R.id.button_8);
+        //mybtn = (Button) findViewById(R.id.button_8);
         txt = (TextView) findViewById(R.id.question);
 
 
-        mybtn.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view){
-                txt.setText(arr[(int) (Math.random()*20)]);
-            }
-        });
+
     }
 
     @Override
@@ -84,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 long diffTime = (curTime - lastUpdate);
                 lastUpdate = curTime;
 
-                float speed = Math.abs(x + y + z - last_x - last_y - last_z)/ diffTime * 10000;
+                float speed = Math.abs(z - last_z)/ diffTime * 10000;
                 if (speed > SHAKE_THRESHOLD){
                     txt = (TextView) findViewById(R.id.question);
                     txt.setText(arr[(int) (Math.random()*20)]);
