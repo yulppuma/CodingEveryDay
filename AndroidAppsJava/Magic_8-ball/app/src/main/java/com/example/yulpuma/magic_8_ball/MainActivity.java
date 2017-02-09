@@ -19,14 +19,12 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     //Not using
     public final static String EXTRA_MESSAGE = "com.example.magic_8_ball.MESSAGE";
-    //String hello;
-    Button mybtn;
     TextView txt;
     String[] arr = new String [20];
     private SensorManager senSensorManager;
     private Sensor senAccelerometer;
     private long lastUpdate = 0;
-    private float last_x, last_y, last_z;
+    private float last_z;
     private static final int SHAKE_THRESHOLD = 850;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +83,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     txt = (TextView) findViewById(R.id.question);
                     txt.setText(arr[(int) (Math.random()*20)]);
                 }
-                last_x = x;
-                last_y = y;
                 last_z = z;
             }
         }
