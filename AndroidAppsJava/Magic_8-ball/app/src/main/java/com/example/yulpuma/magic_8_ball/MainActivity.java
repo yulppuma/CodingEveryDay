@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
-    //Not using
-    public final static String EXTRA_MESSAGE = "com.example.magic_8_ball.MESSAGE";
     TextView txt;
     String[] arr = new String [20];
     private SensorManager senSensorManager;
@@ -56,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         senSensorManager.registerListener(this, senAccelerometer , SensorManager.SENSOR_DELAY_NORMAL);
 
 
-        //mybtn = (Button) findViewById(R.id.button_8);
         txt = (TextView) findViewById(R.id.question);
 
 
