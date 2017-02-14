@@ -10,28 +10,95 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.yulpuma.sensors.MainActivity">
-    <LinearLayout
+    <TextView android:id="@+id/ac"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text="AC: "/>
-        <TextView android:id="@+id/ac"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:text="@string/ac"/>
     <TextView android:id="@+id/acMax"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         android:text="@string/acMax"/>
     <TextView android:id="@+id/acMin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         android:text="@string/acMin"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"/>
+    <TextView android:id="@+id/lac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lac"/>
+    <TextView android:id="@+id/lacMax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="@string/lacMax"/>
+    <TextView android:id="@+id/lacMin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="@string/lacMin"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+    <TextView android:id="@+id/grav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/grav"/>
+    <TextView android:id="@+id/gMax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="@string/gMax"/>
+    <TextView android:id="@+id/gMin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="@string/gMin"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView android:id="@+id/ambT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ambT"/>
+        <TextView android:id="@+id/ambTMax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="@string/ambTMax"/>
+        <TextView android:id="@+id/ambTMin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="@string/ambTMin"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+    <TextView android:id="@+id/gyro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/gyro"/>
+    <TextView android:id="@+id/gyroMax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="@string/gyroMax"/>
+    <TextView android:id="@+id/gyroMin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="@string/gyroMin"/>
 </LinearLayout>

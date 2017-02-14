@@ -1,5 +1,18 @@
 <resources>
     <string name="app_name">Sensors</string>
+    <string name="ac">AC: </string>
     <string name="acMax">AC Max: </string>
     <string name="acMin">AC Min: </string>
+    <string name="lac">LAC: </string>
+    <string name="lacMax">LAC Max: </string>
+    <string name="lacMin">LAC Min: </string>
+    <string name="grav">Gravity: </string>
+    <string name="gMax">GMax: </string>
+    <string name="gMin">GMin: </string>
+    <string name="ambT">Ambient Temperature: </string>
+    <string name="ambTMax">AmpTMax: </string>
+    <string name="ambTMin">AmpTMin: </string>
+    <string name="gyro">Gyroscope: </string>
+    <string name="gyroMax">GyroMax: </string>
+    <string name="gyroMin">GyroMin: </string>
 </resources>
