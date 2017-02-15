@@ -15,4 +15,8 @@
     <string name="gyro">Gyroscope: </string>
     <string name="gyroMax">GyroMax: </string>
     <string name="gyroMin">GyroMin: </string>
+    <string name="magField">Magnetic field: </string>
+    <string name="lightSensor">Light: </string>
+    <string name="proximity">Proximity: </string>
+    <string name="pressure">Pressure: </string>
 </resources>
