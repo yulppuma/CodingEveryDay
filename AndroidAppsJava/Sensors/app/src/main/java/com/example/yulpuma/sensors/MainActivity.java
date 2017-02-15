@@ -18,6 +18,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
     private SensorManager sensManager;
     private Sensor sSensor;
+    //all the TextViews being used
     TextView acVals, maxAcVals, minAcVals;
     TextView lacVals, maxLacVals, minLacVals;
     TextView gVals, maxGVals, minGVals;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     TextView lightSVals, maxLightSVals, minLightSVals;
     TextView proximityVals, maxProxVals, minProxVals;
     TextView pressureVals, maxPressVals, minPressVals;
+    //all the max/min values to be recorded for each respective sensor type
     float maxX = 0, maxY = 0, maxZ = 0;
     float minX = 0, minY = 0, minZ = 0;
     float lmaxX = 0, lmaxY = 0, lmaxZ = 0;
@@ -41,12 +43,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float lightSMax = 0, lightSMin = 0;
     float proxMax = 0, proxMin = 0;
     float pressMax = 0, pressMin = 0;
-    int first = 0, firstL = 0, firstLi = 0, firstPr = 0, firstMF = 0;
+    //Counter to record the first iteration of a sensor
+    int first = 0, firstL = 0, firstLi = 0, firstPr = 0, firstMF = 0, firstAC = 0, firstLAC = 0,
+    firstG = 0, firstAmb = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Values
+        //Getting the textview ids for all sensors
         acVals = (TextView)findViewById(R.id.ac);
         maxAcVals = (TextView) findViewById(R.id.acMax);
         minAcVals = (TextView) findViewById(R.id.acMin);
@@ -76,19 +80,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         minPressVals = (TextView) findViewById(R.id.pressMin);
 
         sensManager =(SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        /*getting access to all available sensors and
+        checking if the phone the app is running on has those sensors*/
         sSensor = sensManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if (sSensor != null)
+            sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        else
+            acVals.setText("AC: N/A");
         sSensor = sensManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if (sSensor != null)
+            sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        else
+            lacVals.setText("LAC: N/A");
         sSensor = sensManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if (sSensor != null)
+            sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        else
+            gVals.setText("Gravity: N/A");
         sSensor = sensManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         if (sSensor != null)
             sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
         else
             ambTVals.setText("Ambient Temp: N/A");
         sSensor = sensManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if (sSensor != null)
+            sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        else
+            gyroVals.setText("Gyroscope: N/A");
         sSensor = sensManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         if(sSensor != null)
             sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -116,119 +134,129 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void onSensorChanged(SensorEvent event){
         Sensor sensor = event.sensor;
+        //When a sensor is detected it makes sure the correct values are being accessed
+        //All the if statements are the same with respect to their sensors
+        //the first values for each if statements keep track of the first iteration of the sensor being used
+        //so that an initial max/min value is stored
         if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            if (sensManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) == null)
-                acVals.setText("Accelerometer is unavailable on this phone");
-            else {
-                float[] values = event.values;
-                acVals.setText("AC: x: " + values[0] + " m/s^2 y: " + values[1] + " m/s^2 z: " + values[2] + " m/s^2");
-                if (values[0] > maxX)
-                    maxX = values[0];
-                if (values[1] > maxY)
-                    maxY = values[1];
-                if (values[2] > maxZ)
-                    maxZ = values[2];
-                if (values[0] < minX)
-                    minX = values[0];
-                if (values[1] < minY)
-                    minY = values[1];
-                if (values[2] < minZ)
-                    minZ = values[2];
-                maxAcVals.setText("AC Max: x: " + maxX + " m/s^2 y: " + maxY + " ms/^2 z: " + maxZ + " m/s^2");
-                minAcVals.setText("AC Min: x: " + minX + "m/s^2 y: " + minY + "m/s^2 z: " + minZ + " m/s^2");
+            firstAC++;
+            float[] values = event.values;
+            if(firstAC == 1){
+                float firstX = values[0];
+                float firstY = values[1];
+                float firstZ = values[2];
+                maxX = firstX;
+                maxY = firstY;
+                maxZ = firstZ;
+                minX = firstX;
+                minY = firstY;
+                minZ = firstZ;
             }
+            acVals.setText("AC: x: " + values[0] + " m/s^2 y: " + values[1] + " m/s^2 z: " + values[2] + " m/s^2");
+            if (values[0] > maxX)
+                maxX = values[0];
+            if (values[1] > maxY)
+                maxY = values[1];
+            if (values[2] > maxZ)
+                maxZ = values[2];
+            if (values[0] < minX)
+                minX = values[0];
+            if (values[1] < minY)
+                minY = values[1];
+            if (values[2] < minZ)
+                minZ = values[2];
+            maxAcVals.setText("AC Max: x: " + maxX + " m/s^2 y: " + maxY + " ms/^2 z: " + maxZ + " m/s^2");
+            minAcVals.setText("AC Min: x: " + minX + "m/s^2 y: " + minY + "m/s^2 z: " + minZ + " m/s^2");
         }
         else if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION){
-            if (sensManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) == null){
-                lacVals.setText("Linear Accelerometer is unavailable on this phone");
+            firstLAC++;
+            float[] values = event.values;
+            if(firstLAC == 1){
+                float firstX = values[0];
+                float firstY = values[1];
+                float firstZ = values[2];
+                lmaxX = firstX;
+                lmaxY = firstY;
+                lmaxZ = firstZ;
+                lminX = firstX;
+                lminY = firstY;
+                lminZ = firstZ;
             }
-            else{
-                float[] values = event.values;
-                if(first == 1){
-                    float firstX = values[0];
-                    float firstY = values[1];
-                    float firstZ = values[2];
-                    lmaxX = firstX;
-                    lmaxY = firstY;
-                    lmaxZ = firstZ;
-                    lminX = firstX;
-                    lminY = firstY;
-                    lminZ = firstZ;
-                }
-                lacVals.setText("LAC: x: " + values[0] + " m/s^2 y: " + values[1] + " m/s^2 z: " + values[2] + " m/s^2");
-                if (values[0] > lmaxX)
-                    lmaxX = values[0];
-                if (values[1] > lmaxY)
-                    lmaxY = values[1];
-                if (values[2] > lmaxZ)
-                    lmaxZ = values[2];
-                if (values[0] < lminX)
-                    lminX = values[0];
-                if (values[1] < lminY)
-                    lminY = values[1];
-                if (values[2] < lminZ)
-                    lminZ = values[2];
-                maxLacVals.setText("LAC Max: x: " + lmaxX + " m/s^2 y: " + lmaxY + " m/s^2 z: " + lmaxZ + " m/s^2");
-                minLacVals.setText("LAC Min: x: " + lminX + " m/s^2 y: " + lminY + " m/s^2 z: " + lminZ + " m/s^2");
-            }
+            lacVals.setText("LAC: x: " + values[0] + " m/s^2 y: " + values[1] + " m/s^2 z: " + values[2] + " m/s^2");
+            if (values[0] > lmaxX)
+                lmaxX = values[0];
+            if (values[1] > lmaxY)
+                lmaxY = values[1];
+            if (values[2] > lmaxZ)
+                lmaxZ = values[2];
+            if (values[0] < lminX)
+                lminX = values[0];
+            if (values[1] < lminY)
+                lminY = values[1];
+            if (values[2] < lminZ)
+                lminZ = values[2];
+            maxLacVals.setText("LAC Max: x: " + lmaxX + " m/s^2 y: " + lmaxY + " m/s^2 z: " + lmaxZ + " m/s^2");
+            minLacVals.setText("LAC Min: x: " + lminX + " m/s^2 y: " + lminY + " m/s^2 z: " + lminZ + " m/s^2");
         }
         else if (sensor.getType() == Sensor.TYPE_GRAVITY){
-            if (sensManager.getDefaultSensor(Sensor.TYPE_GRAVITY) == null){
-                gVals.setText("Gravity sensor is unavailable on this phone");
+            first++;
+            float[] values = event.values;
+            if(first == 1){
+                float firstX = values[0];
+                float firstY = values[1];
+                float firstZ = values[2];
+                gmaxX = firstX;
+                gmaxY = firstY;
+                gmaxZ = firstZ;
+                gminX = firstX;
+                gminY = firstY;
+                gminZ = firstZ;
             }
-            else{
-                first++;
-                float[] values = event.values;
-                if(first == 1){
-                    float firstX = values[0];
-                    float firstY = values[1];
-                    float firstZ = values[2];
-                    gmaxX = firstX;
-                    gmaxY = firstY;
-                    gmaxZ = firstZ;
-                    gminX = firstX;
-                    gminY = firstY;
-                    gminZ = firstZ;
-                }
-                gVals.setText("Gravity: x: " + values[0] + " m/s^2 y: " + values[1] + " m/s^2 z: " + values[2] + " m/s^2");
-                if (values[0] > gmaxX)
-                    gmaxX = values[0];
-                if (values[1] > gmaxY)
-                    gmaxY = values[1];
-                if (values[2] > gmaxZ)
-                    gmaxZ = values[2];
-                if (values[0] < gminX)
-                    gminX = values[0];
-                if (values[1] < gminY)
-                    gminY = values[1];
-                if (values[2] < gminZ)
-                    gminZ = values[2];
-                maxGVals.setText("GMax: x: " + gmaxX + " m/s^2 y: " + gmaxY + " m/s^2 z: " + gmaxZ + "m/s^2");
-                minGVals.setText("GMin: x: " + gminX + " m/s^2 y: " + gminY + " m/s^2 z: " + gminZ + " m/s^2");
-            }
+            gVals.setText("Gravity: x: " + values[0] + " m/s^2 y: " + values[1] + " m/s^2 z: " + values[2] + " m/s^2");
+            if (values[0] > gmaxX)
+                gmaxX = values[0];
+            if (values[1] > gmaxY)
+                gmaxY = values[1];
+            if (values[2] > gmaxZ)
+                gmaxZ = values[2];
+            if (values[0] < gminX)
+                gminX = values[0];
+            if (values[1] < gminY)
+                gminY = values[1];
+            if (values[2] < gminZ)
+                gminZ = values[2];
+            maxGVals.setText("GMax: x: " + gmaxX + " m/s^2 y: " + gmaxY + " m/s^2 z: " + gmaxZ + "m/s^2");
+            minGVals.setText("GMin: x: " + gminX + " m/s^2 y: " + gminY + " m/s^2 z: " + gminZ + " m/s^2");
         }
         else if (sensor.getType() == Sensor.TYPE_GYROSCOPE){
-            if (sensManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) == null){
-                gyroVals.setText("N/A");
+            firstG++;
+            float[] values = event.values;
+            if(firstG == 1){
+                float firstX = values[0];
+                float firstY = values[1];
+                float firstZ = values[2];
+                gyromaxX = firstX;
+                gyromaxY = firstY;
+                gyromaxZ = firstZ;
+                gyrominX = firstX;
+                gyrominY = firstY;
+                gyrominZ = firstZ;
             }
-            else{
-                float[] values = event.values;
-                gyroVals.setText("Gyroscope: x: " + values[0] + " m/s^2 y: " + values[1] + " m/s^2 z: " + values[2] + " m/s^2");
-                if (values[0] > gyromaxX)
-                    gyromaxX = values[0];
-                if (values[1] > gmaxY)
-                    gyromaxY = values[1];
-                if (values[2] > gyromaxZ)
-                    gyromaxZ = values[2];
-                if (values[0] < gyrominX)
-                    gyrominX = values[0];
-                if (values[1] < gyrominY)
-                    gyrominY = values[1];
-                if (values[2] < gyrominZ)
-                    gyrominZ = values[2];
-                maxGyroVals.setText("GyroMax: x: " + gyromaxX + " m/s^2 y: " + gyromaxY + " m/s^2 z: " + gyromaxZ + " m/s^2");
-                minGyroVals.setText("GyroMin: x: " + gyrominX + " m/s^2 y: " + gyrominY + " m/s^2 z: " + gyrominZ + " m/s^2");
-            }
+            gyroVals.setText("Gyroscope: x: " + values[0] + " m/s^2 y: " + values[1] + " m/s^2 z: " + values[2] + " m/s^2");
+            if (values[0] > gyromaxX)
+                gyromaxX = values[0];
+            if (values[1] > gmaxY)
+                gyromaxY = values[1];
+            if (values[2] > gyromaxZ)
+                gyromaxZ = values[2];
+            if (values[0] < gyrominX)
+                gyrominX = values[0];
+            if (values[1] < gyrominY)
+                gyrominY = values[1];
+            if (values[2] < gyrominZ)
+                gyrominZ = values[2];
+            maxGyroVals.setText("GyroMax: x: " + gyromaxX + " m/s^2 y: " + gyromaxY + " m/s^2 z: " + gyromaxZ + " m/s^2");
+            minGyroVals.setText("GyroMin: x: " + gyrominX + " m/s^2 y: " + gyrominY + " m/s^2 z: " + gyrominZ + " m/s^2");
         }
         else if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD){
             firstMF++;
@@ -309,19 +337,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             minPressVals.setText("Pressure Min: " + pressMin + " hPa");
         }
         else{
-            if (sensManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) == null){
-                ambTVals.setText("Ambient Temp: N/A");
+            firstAmb++;
+            float[] values = event.values;
+            if(firstPr == 1){
+                float firstX = values[0];
+                ambTmax = firstX;
+                ambTmin = firstX;
             }
-            else{
-                float[] values = event.values;
-                ambTVals.setText("Ambient Temperatures: " + event.values[0]);
-                if (values[0] > ambTmax)
-                    ambTmax = values[0];
-                if (values[0] < ambTmin)
-                    ambTmin = values[0];
-                maxAmbTVals.setText("ambTMax: " + ambTmax);
-                minAmbTVals.setText("ambTMin: " + ambTmin);
-            }
+            ambTVals.setText("Ambient Temperatures: " + event.values[0]);
+            if (values[0] > ambTmax)
+                ambTmax = values[0];
+            if (values[0] < ambTmin)
+                ambTmin = values[0];
+            maxAmbTVals.setText("ambTMax: " + ambTmax);
+            minAmbTVals.setText("ambTMin: " + ambTmin);
+
         }
     }
 
