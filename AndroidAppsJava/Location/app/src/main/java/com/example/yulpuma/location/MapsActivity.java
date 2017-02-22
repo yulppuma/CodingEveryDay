@@ -2,7 +2,13 @@ package com.example.yulpuma.location;
 
 import android.*;
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -11,10 +17,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.identity.intents.Address;
 import com.google.android.gms.instantapps.PackageManagerWrapper;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -28,18 +36,41 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, SensorEventListener {
     private GoogleMap mMap;
+    private SensorManager sensManager;
+    private Sensor sSensor;
+    float[] values;
+    float maxX = 0, maxY = 0, maxZ = 0;
+    float minX = 0, minY = 0, minZ = 0;
+    int first = 0;
+    boolean isMax = true, isMin = true;
     GoogleApiClient mGoogleApiClient;
     LocationRequest mLocationRequest;
     Location mLastLocation;
     Marker mCurrLocationMarker;
+    TextView latLongAlt, ac, acMin, loc;
+    int i = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        latLongAlt = (TextView) findViewById(R.id.latlongLocation);
+        ac = (TextView) findViewById(R.id.ac);
+        acMin = (TextView) findViewById(R.id.acmin);
+        loc = (TextView) findViewById(R.id.loc);
+        sensManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sSensor = sensManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        if (sSensor != null)
+            sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        else
+            ac.setText("AC: N/A");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -83,7 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
+    public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
@@ -114,6 +145,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        double alt = location.getAltitude();
+        double lat = location.getLatitude();
+        double lon = location.getLongitude();
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
@@ -123,11 +157,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-
-        //stop location updates
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        if (isMax) {
+            ac.setText("Pressure Max: " + maxX + " hPa" + "\nAltitude: " + alt + " Latitude: " + lat
+            + " Longitude: " + lon);
+            isMax = false;
         }
+        if (isMin){
+            acMin.setText("Pressure Min: " + minZ + " hPa" + "\nAltitude: " + alt + "m Latitude: " + lat
+                    + "m Longitude: " + lon + "m");
+            isMin = false;
+        }
+        if(Geocoder.isPresent()){
+            List<android.location.Address> addresses = null;
+            Geocoder gcd = new Geocoder(this, Locale.getDefault());
+            try {
+                addresses = gcd.getFromLocation(lat, lon, 1);
+                if (addresses.get(0).getLocality() != null)loc.setText("Location: " + addresses.get(0).getLocality());
+            } catch (IOException e) {
+                e.printStackTrace(); }
+        }
+        latLongAlt.setText("Altitude: " + location.getAltitude() + "m Latitude: " + location.getLatitude() + "m Longitude: " + location.getLongitude() + "m"
+        + "\nPressure: " + values[0] + " hPa");
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -140,11 +190,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-                //Prompt the user once explanation has been shown
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
@@ -193,4 +238,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //You can add here other case statements according to your requirement.
         }
     }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        Sensor sensor = event.sensor;
+        first++;
+        values = event.values;
+        if(first == 1){
+            float firstX = values[0];
+            maxX = firstX;
+            minZ = firstX;
+        }
+
+        if (values[0] > maxX) {
+            maxX = values[0];
+            isMax = true;
+        }
+        if (values[0] < minZ) {
+            minZ = values[0];
+            isMin = true;
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {/*Not in use*/}
 }
