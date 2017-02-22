@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.vision.barcode.Barcode;
 
 import java.io.IOException;
 import java.util.List;
@@ -172,11 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Geocoder gcd = new Geocoder(this, Locale.getDefault());
             try {
                 addresses = gcd.getFromLocation(lat, lon, 1);
-                for (android.location.Address adr : addresses) {
-                    if (adr.getLocality() != null && adr.getLocality().length() > 0) {
-                        loc.setText("Location: " + adr.getLocality());
-                    }
-                }
+                if (addresses.get(0) != null)loc.setText("Location: " + addresses.get(0).getSubLocality());
             } catch (IOException e) {
                 e.printStackTrace(); }
         }
