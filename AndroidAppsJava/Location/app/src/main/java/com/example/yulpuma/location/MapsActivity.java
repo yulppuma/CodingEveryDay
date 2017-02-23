@@ -173,7 +173,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Geocoder gcd = new Geocoder(this, Locale.getDefault());
             try {
                 addresses = gcd.getFromLocation(lat, lon, 1);
-                if (addresses.get(0) != null)loc.setText("Location: " + addresses.get(0).getSubLocality());
+                if (addresses.get(0) != null){
+                    if(addresses.get(0).getLocality() != null)
+                        loc.setText("Location: " + addresses.get(0).getLocality());
+                    else
+                        loc.setText("Location: " + addresses.get(0).getSubLocality());
+                }
             } catch (IOException e) {
                 e.printStackTrace(); }
         }
