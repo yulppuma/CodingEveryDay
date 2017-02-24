@@ -137,6 +137,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    //Constantly checks for phones location
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
@@ -173,11 +174,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Geocoder gcd = new Geocoder(this, Locale.getDefault());
             try {
                 addresses = gcd.getFromLocation(lat, lon, 1);
+                //check if addresses returns something
                 if (addresses.get(0) != null){
                     if(addresses.get(0).getLocality() != null)
                         loc.setText("Location: " + addresses.get(0).getLocality());
                     else
-                        loc.setText("Location: " + addresses.get(0).getSubLocality());
+                        loc.setText("Location: " + addresses.get(0).getSubLocality() );
                 }
             } catch (IOException e) {
                 e.printStackTrace(); }
