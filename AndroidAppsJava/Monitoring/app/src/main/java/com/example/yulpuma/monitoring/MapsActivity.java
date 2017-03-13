@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.media.MediaRecorder;
 
@@ -51,11 +52,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<LatLng> points;
     Polyline line;
 
+    TextView decibelVal;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         points = new ArrayList<LatLng>();
+        decibelVal = (TextView) findViewById(R.id.decibel);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -127,7 +131,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(Location location){
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
@@ -135,7 +139,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        startRecording();
+        start();
+        if(mRecorder != null){
+            decibelVal.setText("Decibel: " + mRecorder.getMaxAmplitude());
+        }
         points.add(latLng);
         PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
         for (int i = 0; i < points.size(); i++) {
@@ -147,35 +154,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
-        double decibel = mRecorder.getMaxAmplitude();
-        stopRecording();
+        //double decibel = mRecorder.getMaxAmplitude();
+        stop();
     }
-    private void startRecording() {
-        if (mRecorder != null) {
-            mRecorder.release();
-        }
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
-        mRecorder.setOutputFile("/dev/null");
-        try {
-            mRecorder.prepare();
+
+    public void start() {
+        if(mRecorder == null){
+            mRecorder = new MediaRecorder();
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mRecorder.setOutputFile("/dev/null");
+            try{
+                mRecorder.prepare();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
             mRecorder.start();
-        } catch (IOException e) {
-            Log.e("giftlist", "io problems while preparing [" +
-                     "]: " + e.getMessage());
         }
     }
 
-    private void stopRecording() {
-        if (mRecorder != null) {
+    public void stop(){
+        if(mRecorder != null){
             mRecorder.stop();
             mRecorder.release();
             mRecorder = null;
         }
     }
-
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public boolean checkLocationPermission(){
         if (ContextCompat.checkSelfPermission(this,
