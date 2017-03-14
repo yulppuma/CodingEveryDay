@@ -11,6 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.example.yulpuma.monitoring.MapsActivity" />
+    <Button android:id="@+id/recording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recording"
+        android:onClick="record"/>
     <TextView android:id="@+id/decibel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -14,6 +14,8 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.media.MediaRecorder;
@@ -37,12 +39,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static java.lang.Math.log10;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks,
         LocationListener
 {
-
+    private static String mFileName = null;
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
@@ -53,13 +57,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Polyline line;
 
     TextView decibelVal;
+    Button recording;
 
+    private String [] permissions = {Manifest.permission.RECORD_AUDIO};
+    private static final String LOG_TAG = "AudioRecordTest";
+    private boolean isRecording = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        recording = (Button) findViewById(R.id.recording);
         points = new ArrayList<LatLng>();
         decibelVal = (TextView) findViewById(R.id.decibel);
+        mFileName = getExternalCacheDir().getAbsolutePath();
+        mFileName += "/audiorecordtest.3gp";
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -130,51 +142,81 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    private static double mEMA = 0.0;
+    static final private double EMA_FILTER = 0.6;
     @Override
     public void onLocationChanged(Location location){
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
-
+        PolylineOptions options = null;
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        start();
+        //startRecording();
         if(mRecorder != null){
-            decibelVal.setText("Decibel: " + mRecorder.getMaxAmplitude());
+            //mEMA = EMA_FILTER * mRecorder.getMaxAmplitude() + (1.0 - EMA_FILTER) * mEMA;
+            double dec = 20 * log10(mRecorder.getMaxAmplitude()/ 32767.0);
+            decibelVal.setText("Decibel: " + dec);
+            if(dec < -21.0){
+                options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+            }
+            else if(dec > -21.0 && dec < -15.0){
+                options = new PolylineOptions().width(5).color(Color.GREEN).geodesic(true);
+            }
+            else if(dec > -15.0 && dec < -9.0){
+                options = new PolylineOptions().width(5).color(Color.YELLOW).geodesic(true);
+            }
+            else{
+                options = new PolylineOptions().width(5).color(Color.RED).geodesic(true);
+            }
         }
         points.add(latLng);
-        PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+        if(options == null)
+            options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
+
         for (int i = 0; i < points.size(); i++) {
             LatLng point = points.get(i);
             options.add(point);
         }
+        line =mMap.addPolyline(options);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
         //double decibel = mRecorder.getMaxAmplitude();
-        stop();
+        //stopRecording();
     }
-
-    public void start() {
-        if(mRecorder == null){
-            mRecorder = new MediaRecorder();
-            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mRecorder.setOutputFile("/dev/null");
-            try{
-                mRecorder.prepare();
-            } catch (IOException e){
-                e.printStackTrace();
-            }
-            mRecorder.start();
+    public void record(View view){
+        if(isRecording){
+            recording.setText("Stop Recording");
+            startRecording();
         }
+        else{
+            recording.setText("Start Recording");
+            stopRecording();
+        }
+        isRecording = !isRecording;
     }
 
-    public void stop(){
+    private void startRecording() {
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mRecorder.setOutputFile("/dev/null");
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        try {
+            mRecorder.prepare();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+
+        mRecorder.start();
+    }
+
+    public void stopRecording(){
         if(mRecorder != null){
             mRecorder.stop();
             mRecorder.release();
@@ -212,6 +254,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return true;
         }
     }
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+    private boolean permissionToRecordAccepted = false;
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
