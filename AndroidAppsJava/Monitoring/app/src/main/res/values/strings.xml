@@ -2,4 +2,8 @@
     <string name="app_name">Monitoring</string>
     <string name="title_activity_maps">Map</string>
     <string name="recording">Start Recording</string>
+    <string name="blue">Quiet</string>
+    <string name="green">Fairly Noisy</string>
+    <string name="yellow">Noisy</string>
+    <string name="red">Cannot Think Noisy</string>
 </resources>
