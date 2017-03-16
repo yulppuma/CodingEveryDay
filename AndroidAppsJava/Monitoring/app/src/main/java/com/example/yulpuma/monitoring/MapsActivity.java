@@ -65,7 +65,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
     private static final String LOG_TAG = "AudioRecordTest";
     private boolean isRecording = true;
-    int count = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,9 +75,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         decArr = new ArrayList<Double>();
         polylines = new ArrayList<Polyline>();
         decibelVal = (TextView) findViewById(R.id.decibel);
-        //green = (TextView) findViewById(R.id.green);
-        //yellow = (TextView) findViewById(R.id.yellow);
-        //red = (TextView) findViewById(R.id.red);
         mFileName = getExternalCacheDir().getAbsolutePath();
         mFileName += "/audiorecordtest.3gp";
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
@@ -152,8 +148,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private static double mEMA = 0.0;
-    static final private double EMA_FILTER = 0.6;
     @Override
     public void onLocationChanged(Location location){
         mLastLocation = location;
@@ -165,25 +159,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double dec = -28;
         int color = Color.BLUE;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        //startRecording();
         if(mRecorder != null){
-            //mEMA = EMA_FILTER * mRecorder.getMaxAmplitude() + (1.0 - EMA_FILTER) * mEMA;
             dec = 20 * log10(mRecorder.getMaxAmplitude()/ 32767.0);
-            //decibelVal.setText("Decibel: " + dec);
             if (dec < -21.0) {
                 options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
-                color = Color.BLUE;
             } else if (dec > -21.0 && dec < -15.0) {
                 options = new PolylineOptions().width(5).color(Color.GREEN).geodesic(true);
                 color = Color.GREEN;
             } else if (dec > -15.0 && dec < -9.0) {
                 options = new PolylineOptions().width(5).color(Color.YELLOW).geodesic(true);
-                color = Color.YELLOW;
             } else {
                 options = new PolylineOptions().width(5).color(Color.RED).geodesic(true);
-                color = Color.RED;
             }
-            //decArr.add(dec);
         }
         points.add(latLng);
 
@@ -191,9 +178,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
         for (int i = 0; i < points.size(); i++) {
             LatLng point = points.get(i);
-            //option.get(i).add(point);
             options.add(point);
-            //mMap.addPolyline(new PolylineOptions().add(point, points.get(i+1)).width(5).color(color).geodesic(true));
         }
         option.add(options);
         line = mMap.addPolyline(options);
@@ -206,9 +191,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
-        //double decibel = mRecorder.getMaxAmplitude();
-        //stopRecording();
-        //count++;
     }
     public void record(View view){
         if(isRecording){
