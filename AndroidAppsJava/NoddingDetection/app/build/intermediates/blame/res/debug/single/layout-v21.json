@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "C:\\Users\\Yul\\Documents\\CodingEveryDay\\AndroidAppsJava\\NoddingDetection\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\place_autocomplete_fragment.xml",
+        "source": "C:\\Users\\Yul\\.android\\build-cache\\a02ef541fc957786ddfe4bea94e1b8c69b2f840e\\output\\res\\layout-v21\\place_autocomplete_fragment.xml"
+    },
+    {
+        "merged": "C:\\Users\\Yul\\Documents\\CodingEveryDay\\AndroidAppsJava\\NoddingDetection\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_custom_big.xml",
+        "source": "C:\\Users\\Yul\\.android\\build-cache\\00bd49174966c4731e906a92db358afb58eca26a\\output\\res\\layout-v21\\notification_template_custom_big.xml"
+    },
+    {
+        "merged": "C:\\Users\\Yul\\Documents\\CodingEveryDay\\AndroidAppsJava\\NoddingDetection\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action.xml",
+        "source": "C:\\Users\\Yul\\.android\\build-cache\\00bd49174966c4731e906a92db358afb58eca26a\\output\\res\\layout-v21\\notification_action.xml"
+    },
+    {
+        "merged": "C:\\Users\\Yul\\Documents\\CodingEveryDay\\AndroidAppsJava\\NoddingDetection\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_icon_group.xml",
+        "source": "C:\\Users\\Yul\\.android\\build-cache\\00bd49174966c4731e906a92db358afb58eca26a\\output\\res\\layout-v21\\notification_template_icon_group.xml"
+    },
+    {
+        "merged": "C:\\Users\\Yul\\Documents\\CodingEveryDay\\AndroidAppsJava\\NoddingDetection\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action_tombstone.xml",
+        "source": "C:\\Users\\Yul\\.android\\build-cache\\00bd49174966c4731e906a92db358afb58eca26a\\output\\res\\layout-v21\\notification_action_tombstone.xml"
+    }
+]

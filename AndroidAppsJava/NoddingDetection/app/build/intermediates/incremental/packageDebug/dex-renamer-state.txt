@@ -1,0 +1,7 @@
+#Sun Mar 26 20:39:06 PDT 2017
+base.0=C\:\\Users\\Yul\\Documents\\CodingEveryDay\\AndroidAppsJava\\NoddingDetection\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_a1a781eeb8441f6f12d294453c8e51738bf4e373
+renamed.1=classes2.dex
+renamed.0=classes.dex
+file.1=C\:\\Users\\Yul\\Documents\\CodingEveryDay\\AndroidAppsJava\\NoddingDetection\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_3f9b6941637268c552f4d646dc9aa7e2073fd88f\\classes.dex
+base.1=C\:\\Users\\Yul\\Documents\\CodingEveryDay\\AndroidAppsJava\\NoddingDetection\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_3f9b6941637268c552f4d646dc9aa7e2073fd88f
+file.0=C\:\\Users\\Yul\\Documents\\CodingEveryDay\\AndroidAppsJava\\NoddingDetection\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_a1a781eeb8441f6f12d294453c8e51738bf4e373\\classes.dex
