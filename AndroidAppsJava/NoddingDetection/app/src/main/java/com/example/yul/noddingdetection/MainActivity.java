@@ -10,11 +10,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 
 public class MainActivity extends Activity {
     private Camera mCamera = null;
     private CameraView mCameraView = null;
+    private TextView exp = null;
+    private String expression = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

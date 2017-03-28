@@ -12,12 +12,17 @@
 
     </FrameLayout>
 
-    <ImageButton
+    <ImageButton android:id="@+id/imgClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imgClose"
         android:layout_gravity="right|top"
         android:background="@android:drawable/ic_menu_close_clear_cancel"
         android:padding="20dp"/>
+
+    <TextView android:id="@+id/exp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:text="hello world"/>
 
 </FrameLayout>

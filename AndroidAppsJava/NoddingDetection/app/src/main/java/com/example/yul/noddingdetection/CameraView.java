@@ -5,13 +5,14 @@ import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
     private SurfaceHolder mHolder;
     private Camera mCamera;
-
+    public String exp = null;
     public CameraView(Context context, Camera camera){
         super(context);
 
