@@ -17,6 +17,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
 
         mCamera = camera;
         mCamera.setDisplayOrientation(90);
+        mCamera.setFaceDetectionListener(new MyFaceDetectionListener());
         //get the holder and set this class as the callback, so we can get camera data here
         mHolder = getHolder();
         mHolder.addCallback(this);
@@ -29,6 +30,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
             //when the surface is created, we can set the camera to draw images in this surfaceholder
             mCamera.setPreviewDisplay(surfaceHolder);
             mCamera.startPreview();
+            startFaceDetection();
         } catch (IOException e) {
             Log.d("ERROR", "Camera error on surfaceCreated " + e.getMessage());
         }
@@ -50,6 +52,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         try{
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
+            startFaceDetection();
         } catch (IOException e) {
             Log.d("ERROR", "Camera error on surfaceChanged " + e.getMessage());
         }
@@ -61,6 +64,17 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         //if you are unsing with more screens, please move this code your activity
         mCamera.stopPreview();
         mCamera.release();
+    }
+
+    public void startFaceDetection(){
+        // Try starting Face Detection
+        Camera.Parameters params = mCamera.getParameters();
+
+        // start face detection only *after* preview has started
+        if (params.getMaxNumDetectedFaces() > 0){
+            // camera supports face detection, so can start it:
+            mCamera.startFaceDetection();
+        }
     }
 }
 
