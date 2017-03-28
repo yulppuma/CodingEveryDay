@@ -19,10 +19,6 @@ import org.w3c.dom.Text;
 public class MainActivity extends Activity {
     private Camera mCamera = null;
     private CameraView mCameraView = null;
-    private TextView exp = null;
-    private Button button = null;
-    private String expression = "hello";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,15 +31,15 @@ public class MainActivity extends Activity {
                 if(new Camera.CameraInfo().facing == Camera.CameraInfo.CAMERA_FACING_BACK)
                     whichCamera = i;
             }
-            mCamera = Camera.open(whichCamera);//you can use open(int) to use different cameras
+            mCamera = Camera.open(whichCamera);
         } catch (Exception e){
             Log.d("ERROR", "Failed to get camera: " + e.getMessage());
         }
 
         if(mCamera != null) {
-            mCameraView = new CameraView(this, mCamera);//create a SurfaceView to show camera data
+            mCameraView = new CameraView(this, mCamera);
             FrameLayout camera_view = (FrameLayout)findViewById(R.id.camera_view);
-            camera_view.addView(mCameraView);//add the SurfaceView to the layout
+            camera_view.addView(mCameraView);
         }
 
 

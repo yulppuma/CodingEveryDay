@@ -3,7 +3,6 @@ package com.example.yul.noddingdetection;
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Camera;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,11 +15,9 @@ public class MyFaceDetectionListener extends Activity implements Camera.FaceDete
 
     public MyFaceDetectionListener(Context context){
         this.context=context;
-        //exp = (TextView) findViewById(R.id.exp);
     }
     public Context context;
     public int x,y, count = 0;
-    private TextView exp;
 
     @Override
     public void onFaceDetection(Camera.Face[] faces, Camera camera) {
@@ -51,7 +48,6 @@ public class MyFaceDetectionListener extends Activity implements Camera.FaceDete
             else{
                 x = faces[0].rect.centerX();
                 y = faces[0].rect.centerY();
-                //exp.setText("ITS WORKSRS");
             }
         }
     }
