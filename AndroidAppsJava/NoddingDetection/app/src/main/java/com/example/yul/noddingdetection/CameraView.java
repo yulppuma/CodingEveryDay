@@ -12,13 +12,13 @@ import java.io.IOException;
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
     private SurfaceHolder mHolder;
     private Camera mCamera;
-    public String exp = null;
+    public String exp = "hello";
     public CameraView(Context context, Camera camera){
         super(context);
 
         mCamera = camera;
         mCamera.setDisplayOrientation(90);
-        mCamera.setFaceDetectionListener(new MyFaceDetectionListener());
+        mCamera.setFaceDetectionListener(new MyFaceDetectionListener(context));
         //get the holder and set this class as the callback, so we can get camera data here
         mHolder = getHolder();
         mHolder.addCallback(this);

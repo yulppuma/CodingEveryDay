@@ -3,11 +3,11 @@ package com.example.yul.noddingdetection;
 import android.app.Activity;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -20,7 +20,8 @@ public class MainActivity extends Activity {
     private Camera mCamera = null;
     private CameraView mCameraView = null;
     private TextView exp = null;
-    private String expression = null;
+    private Button button = null;
+    private String expression = "hello";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class MainActivity extends Activity {
             camera_view.addView(mCameraView);//add the SurfaceView to the layout
         }
 
+
         //btn to close the application
         ImageButton imgClose = (ImageButton)findViewById(R.id.imgClose);
         imgClose.setOnClickListener(new View.OnClickListener() {
@@ -54,4 +56,5 @@ public class MainActivity extends Activity {
             }
         });
     }
+
 }
