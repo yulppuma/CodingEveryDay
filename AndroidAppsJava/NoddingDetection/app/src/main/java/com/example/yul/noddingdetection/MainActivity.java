@@ -51,6 +51,6 @@ public class MainActivity extends Activity {
                 System.exit(0);
             }
         });
-    }
+    }//end of onCreate
 
 }

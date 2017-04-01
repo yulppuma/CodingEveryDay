@@ -13,11 +13,13 @@ import android.widget.Toast;
 
 public class MyFaceDetectionListener extends Activity implements Camera.FaceDetectionListener {
 
+    public Context context;
+    public int x,y, count = 0;
+
     public MyFaceDetectionListener(Context context){
         this.context=context;
     }
-    public Context context;
-    public int x,y, count = 0;
+
 
     @Override
     public void onFaceDetection(Camera.Face[] faces, Camera camera) {
@@ -50,5 +52,5 @@ public class MyFaceDetectionListener extends Activity implements Camera.FaceDete
                 y = faces[0].rect.centerY();
             }
         }
-    }
+    }//end of onFaceDetection
 }

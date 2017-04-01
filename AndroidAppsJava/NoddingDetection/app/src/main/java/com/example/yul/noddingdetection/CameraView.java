@@ -12,7 +12,8 @@ import java.io.IOException;
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
     private SurfaceHolder mHolder;
     private Camera mCamera;
-    public String exp = "hello";
+
+    //CameraView object which creates the view where the user sees camera
     public CameraView(Context context, Camera camera){
         super(context);
 
@@ -22,8 +23,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         mHolder = getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
-    }
+    }//end of CameraView constructor
 
+    //Surface where the camera will be displayed is made
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         try{
@@ -33,8 +35,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         } catch (IOException e) {
             Log.d("ERROR", "Camera error on surfaceCreated " + e.getMessage());
         }
-    }
+    }//end of surfaceCreated
 
+    //Any changes to the surface happens here
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
         if(mHolder.getSurface() == null)
@@ -51,13 +54,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         } catch (IOException e) {
             Log.d("ERROR", "Camera error on surfaceChanged " + e.getMessage());
         }
-    }
+    }//end of surfaceChanged
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         mCamera.stopPreview();
         mCamera.release();
-    }
+    }//end of surfaceDestroyed
 
     public void startFaceDetection(){
         // Try starting Face Detection
@@ -66,6 +69,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback{
         if (params.getMaxNumDetectedFaces() > 0){
             mCamera.startFaceDetection();
         }
-    }
+    }//end of startFaceDetection
 }
 
