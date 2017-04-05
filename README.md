@@ -1,6 +1,7 @@
 # Coding Every Day
 
-##Although, the name suggests that I code everyday, it might not show that I have pushed or updated my repository, however, I do try to code every day.
+Although, the name suggests that I code everyday, it might not show that I have worked on anything, however, I do try to work on something every day.
+
 Hackerrank profile. 
 ( https://www.hackerrank.com/yulppuma )
 
