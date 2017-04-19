@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -128,6 +129,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         else
             pressureVals.setText("Pressure: N/A");
 
+        List<Sensor> sensors = sensManager.getSensorList(Sensor.TYPE_ALL);
+        for (Sensor sensor : sensors) {
+            Log.d("Sensors", "" + sensor.getName());
+        }
     }
 
     public void onAccuracyChanged(Sensor sensor, int accuracy){/*Not in use*/}
