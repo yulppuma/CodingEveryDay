@@ -59,7 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<Double> decArr;
     private ArrayList<Polyline> polylines;
     TextView decibelVal;
-    TextView green, yellow, red;
+    TextView green, yellow, red, decibel;
     Button recording;
 
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
@@ -161,6 +161,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         if(mRecorder != null){
             dec = 20 * log10(mRecorder.getMaxAmplitude()/ 32767.0);
+            decibelVal.setText("Decibel: " + dec);
             if (dec < -21.0) {
                 options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
             } else if (dec > -21.0 && dec < -15.0) {

@@ -6,4 +6,5 @@
     <string name="green">Fairly Noisy</string>
     <string name="yellow">Noisy</string>
     <string name="red">Cannot Think Noisy</string>
+    <string name="decibel">Decibel: </string>
 </resources>

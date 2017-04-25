@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentRight="true">
-    <TextView android:id="@+id/decibel"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="bottom"
@@ -65,9 +65,21 @@
         android:background="#ff0000"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:textColor="#ffffffff"
-        android:text="@string/red"
         android:paddingLeft="5dp"
-        android:paddingRight="5dp"/>
+        android:paddingRight="5dp"
+        android:textColor="#ffffffff"
+        android:text="@string/red"/>
     </LinearLayout>
+    <TextView android:id="@+id/decibel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="#000000"
+        android:textColor="#ffffff"
+        android:text="@string/decibel"/>
 </RelativeLayout>
