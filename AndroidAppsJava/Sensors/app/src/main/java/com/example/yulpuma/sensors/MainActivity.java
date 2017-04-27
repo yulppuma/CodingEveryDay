@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.SensorAdditionalInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float lightSMax = 0, lightSMin = 0;
     float proxMax = 0, proxMin = 0;
     float pressMax = 0, pressMin = 0;
-    //Counter to record the first iteration of a sensor
+    //Counter to record the first iteration of a sensor and averagess
+    float counter = 0;
     int first = 0, firstL = 0, firstLi = 0, firstPr = 0, firstMF = 0, firstAC = 0, firstLAC = 0,
     firstG = 0, firstAmb = 0;
     @Override
@@ -79,8 +81,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         pressureVals = (TextView) findViewById(R.id.pressure);
         maxPressVals = (TextView) findViewById(R.id.pressMax);
         minPressVals = (TextView) findViewById(R.id.pressMin);
-
         sensManager =(SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
         /*getting access to all available sensors and
         checking if the phone the app is running on has those sensors*/
         sSensor = sensManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
