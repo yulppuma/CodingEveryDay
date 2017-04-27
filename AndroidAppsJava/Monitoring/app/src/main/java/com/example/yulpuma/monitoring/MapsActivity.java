@@ -46,7 +46,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.ConnectionCallbacks,
         LocationListener
 {
-    private static String mFileName = null;
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
@@ -161,7 +160,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         if(mRecorder != null){
             dec = 20 * log10(mRecorder.getMaxAmplitude()/ 32767.0);
-            decibelVal.setText("Decibel: " + dec);
+            double deci = (26 + dec) * 3;
+            decibelVal.setText("Decibel: " + deci);
             if (dec < -21.0) {
                 options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
             } else if (dec > -21.0 && dec < -15.0) {
