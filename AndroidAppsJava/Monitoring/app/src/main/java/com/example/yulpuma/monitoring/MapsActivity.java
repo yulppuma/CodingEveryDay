@@ -74,8 +74,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         decArr = new ArrayList<Double>();
         polylines = new ArrayList<Polyline>();
         decibelVal = (TextView) findViewById(R.id.decibel);
-        mFileName = getExternalCacheDir().getAbsolutePath();
-        mFileName += "/audiorecordtest.3gp";
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
