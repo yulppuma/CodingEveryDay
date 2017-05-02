@@ -2,8 +2,13 @@ package com.example.yulpuma.sensorbasedroutes;
 
 import android.*;
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -44,7 +49,7 @@ import static java.lang.Math.log10;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks,
-        LocationListener{
+        LocationListener, SensorEventListener{
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -57,9 +62,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<PolylineOptions> option;
     private ArrayList<Double> decArr;
     private ArrayList<Polyline> polylines;
+    private SensorManager sensManager;
+    private Sensor sSensor;
     TextView decibelVal;
     TextView green, yellow, red, decibel;
     Button recording;
+
 
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
     private static final String LOG_TAG = "AudioRecordTest";
@@ -74,6 +82,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         decArr = new ArrayList<Double>();
         polylines = new ArrayList<Polyline>();
         decibelVal = (TextView) findViewById(R.id.decibel);
+        sensManager = (SensorManager) getSystemService (Context.SENSOR_SERVICE);
+        sSensor = sensManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if(sSensor != null)
+            sensManager.registerListener(this, sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sSensor = sensManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        if(sSensor != null)
+            sensManager.registerListener(this,sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sSensor = sensManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        if(sSensor != null)
+            sensManager.registerListener(this,sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sSensor = sensManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        if(sSensor != null)
+            sensManager.registerListener(this,sSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sSensor = sensManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        if(sSensor != null)
+            sensManager.registerListener(this,sSensor, SensorManager.SENSOR_DELAY_NORMAL);
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -180,11 +204,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             options.add(point);
         }
         option.add(options);
-        line = mMap.addPolyline(options);
-        polylines.add(line);
-        for(int i = option.size()-1; i >= 0; i--){
-            mMap.addPolyline(option.get(i));
-        }
+
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
@@ -289,5 +309,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // other 'case' lines to check for other permissions this app might request.
             // You can add here other case statements according to your requirement.
         }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }
