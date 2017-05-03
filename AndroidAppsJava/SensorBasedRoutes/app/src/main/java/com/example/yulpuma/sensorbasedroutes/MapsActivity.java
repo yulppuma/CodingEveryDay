@@ -67,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextView decibelVal;
     TextView green, yellow, red, decibel;
     Button recording;
-
+    boolean acc = false, gyro = false, pressure = false, gravity = false, linear = false;
 
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
     private static final String LOG_TAG = "AudioRecordTest";
@@ -313,7 +313,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        Sensor sensor = event.sensor;
 
+        if (sensor.getType() == Sensor.TYPE_ACCELEROMETER){
+            float[] values = event.values;
+            if(Math.abs(Math.round(values[0]*10)/10) < 0.1 && Math.abs(Math.round(values[1]*10)/10) == 9.8 && Math.abs(Math.round(values[2]*10)/10) < 0.1)
+                acc = true;
+            else
+                acc = false;
+        }
+        else if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION){
+            float[] values = event.values;
+            if(Math.abs(values[0]) < 0.1 && Math.abs(values[1]) < 0.1 && Math.abs(values[2]) < 0.1)
+                linear = true;
+            else
+                linear = false;
+        }
+        else if (sensor.getType() == Sensor.TYPE_GRAVITY){
+            float[] values = event.values;
+            if(Math.abs(Math.round(values[0]*10)/10) < 0.1 && Math.abs(Math.round(values[1]*10)/10) == 9.8 && Math.abs(Math.round(values[2]*10)/10) < 0.1)
+                gravity = true;
+            else
+                gravity = false;
+        }
+        else if (sensor.getType() == Sensor.TYPE_GYROSCOPE){
+            float[] values = event.values;
+            if(Math.abs(values[0]) < 0.1 && Math.abs(values[1]) < 0.1 && Math.abs(values[2]) < 0.1)
+                gyro = true;
+            else
+                gyro = false;
+        }
     }
 
     @Override
