@@ -210,11 +210,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         points.add(latLng);
-        ac.setText("AC: " + facx.format(acx) + " " + facy.format(acy) + " " + facz.format(acz));
-        lac.setText("LAC: " + flacx.format(lacx) + " " + flacy.format(lacy) + " " + flacz.format(lacz));
-        grav.setText("grav: " + fgravx.format(gravx) + " " + fgravy.format(gravy) + " " + fgravz.format(gravz));
-        gyros.setText("gyro: " + fgyrox.format(gyrox) + " " + fgyroy.format(gyroy) + " " + fgyroz.format(gyroz));
-        press.setText("pressure: " + fpressVal.format(pressVal) + currPress + " " + lastPress);
+        ac.setText("AC: " + facx.format(acx) + " " + acy + " " + facz.format(acz) + " " + acc);
+        lac.setText("LAC: " + flacx.format(lacx) + " " + flacy.format(lacy) + " " + flacz.format(lacz) + " " + linear);
+        grav.setText("grav: " + fgravx.format(gravx) + " " + gravy + " " + fgravz.format(gravz) + " " + gravity);
+        gyros.setText("gyro: " + fgyrox.format(gyrox) + " " + fgyroy.format(gyroy) + " " + fgyroz.format(gyroz) + " " + gyro);
+        press.setText("pressure: " + fpressVal.format(pressVal) + " " + currPress + " " + lastPress + " " + pressure);
         if(options == null)
             options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
         for (int i = 0; i < points.size(); i++) {
@@ -338,7 +338,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             acx = Math.abs(values[0]);
             acy = Math.abs(values[1]);
             acz = Math.abs(values[2]);
-            if(acx < 0.2 && facy.format(acy) == "9.8" && acz < 0.2)
+            if(acx < 0.2 && acy < 9.8 && acz < 0.2)
                 acc = true;
             else
                 acc = false;
@@ -358,7 +358,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             gravx = Math.abs(values[0]);
             gravy = Math.abs(values[1]);
             gravz = Math.abs(values[2]);
-            if(gravx < 0.2 && fgravy.format(gravy) == "9.8" && gravz < 0.2)
+            if(gravx < 0.2 && gravy < 9.8 && gravz < 0.2)
                 gravity = true;
             else
                 gravity = false;
