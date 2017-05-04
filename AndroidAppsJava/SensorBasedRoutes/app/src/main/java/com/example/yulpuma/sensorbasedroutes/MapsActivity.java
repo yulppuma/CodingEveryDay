@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static java.lang.Math.log10;
@@ -65,9 +66,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SensorManager sensManager;
     private Sensor sSensor;
     TextView decibelVal;
-    TextView green, yellow, red, decibel;
+    TextView ac, lac, gyros, grav, press, decibel;
     Button recording;
     boolean acc = false, gyro = false, pressure = false, gravity = false, linear = false;
+    double acx, acy, acz, lacx, lacy, lacz, gyrox, gyroy, gyroz, gravx, gravy, gravz, pressVal;
+    DecimalFormat facx = new DecimalFormat("0.0"), facy = new DecimalFormat("0.0"), facz = new DecimalFormat("0.0"),
+            flacx = new DecimalFormat("0.0"), flacy = new DecimalFormat("0.0"), flacz = new DecimalFormat("0.0"),
+            fgyrox = new DecimalFormat("0.0"), fgyroy = new DecimalFormat("0.0"), fgyroz = new DecimalFormat("0.0"),
+            fgravx = new DecimalFormat("0.0"), fgravy = new DecimalFormat("0.0"), fgravz = new DecimalFormat("0.0"),
+            fpressVal = new DecimalFormat("0.0");
+    int first = 0;
+    float currPress, lastPress;
 
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
     private static final String LOG_TAG = "AudioRecordTest";
@@ -82,6 +91,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         decArr = new ArrayList<Double>();
         polylines = new ArrayList<Polyline>();
         decibelVal = (TextView) findViewById(R.id.decibel);
+        ac = (TextView) findViewById(R.id.ac);
+        lac = (TextView) findViewById(R.id.lac);
+        gyros = (TextView) findViewById(R.id.gyros);
+        grav = (TextView) findViewById(R.id.grav);
+        press = (TextView) findViewById(R.id.press);
         sensManager = (SensorManager) getSystemService (Context.SENSOR_SERVICE);
         sSensor = sensManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         if(sSensor != null)
@@ -196,7 +210,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         points.add(latLng);
-
+        ac.setText("AC: " + facx.format(acx) + " " + facy.format(acy) + " " + facz.format(acz));
+        lac.setText("LAC: " + flacx.format(lacx) + " " + flacy.format(lacy) + " " + flacz.format(lacz));
+        grav.setText("grav: " + fgravx.format(gravx) + " " + fgravy.format(gravy) + " " + fgravz.format(gravz));
+        gyros.setText("gyro: " + fgyrox.format(gyrox) + " " + fgyroy.format(gyroy) + " " + fgyroz.format(gyroz));
+        press.setText("pressure: " + fpressVal.format(pressVal) + currPress + " " + lastPress);
         if(options == null)
             options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
         for (int i = 0; i < points.size(); i++) {
@@ -204,7 +222,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             options.add(point);
         }
         option.add(options);
-
+        if(acc && linear && gyro && gravity && pressure)
+            decibel.setText("True");
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
@@ -314,34 +333,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-
         if (sensor.getType() == Sensor.TYPE_ACCELEROMETER){
             float[] values = event.values;
-            if(Math.abs(Math.round(values[0]*10)/10) < 0.1 && Math.abs(Math.round(values[1]*10)/10) == 9.8 && Math.abs(Math.round(values[2]*10)/10) < 0.1)
+            acx = Math.abs(values[0]);
+            acy = Math.abs(values[1]);
+            acz = Math.abs(values[2]);
+            if(acx < 0.2 && facy.format(acy) == "9.8" && acz < 0.2)
                 acc = true;
             else
                 acc = false;
         }
         else if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION){
             float[] values = event.values;
-            if(Math.abs(values[0]) < 0.1 && Math.abs(values[1]) < 0.1 && Math.abs(values[2]) < 0.1)
+            lacx = Math.abs(values[0]);
+            lacy = Math.abs(values[1]);
+            lacz = Math.abs(values[2]);
+            if(lacx < 0.2 && lacy < 0.2 && lacz < 0.2)
                 linear = true;
             else
                 linear = false;
         }
         else if (sensor.getType() == Sensor.TYPE_GRAVITY){
             float[] values = event.values;
-            if(Math.abs(Math.round(values[0]*10)/10) < 0.1 && Math.abs(Math.round(values[1]*10)/10) == 9.8 && Math.abs(Math.round(values[2]*10)/10) < 0.1)
+            gravx = Math.abs(values[0]);
+            gravy = Math.abs(values[1]);
+            gravz = Math.abs(values[2]);
+            if(gravx < 0.2 && fgravy.format(gravy) == "9.8" && gravz < 0.2)
                 gravity = true;
             else
                 gravity = false;
         }
         else if (sensor.getType() == Sensor.TYPE_GYROSCOPE){
             float[] values = event.values;
-            if(Math.abs(values[0]) < 0.1 && Math.abs(values[1]) < 0.1 && Math.abs(values[2]) < 0.1)
+            gyrox = Math.abs(values[0]);
+            gyroy = Math.abs(values[1]);
+            gyroz = Math.abs(values[2]);
+            if(gyrox < 0.2 && gyroy < 0.2 && gyroz < 0.2)
                 gyro = true;
             else
                 gyro = false;
+        }
+        else{
+            float[] values = event.values;
+            if(first == 0){
+                currPress = values[0];
+                lastPress = values[0];
+                first++;
+            }
+            else{
+                lastPress = currPress;
+                currPress = values[0];
+            }
+            pressVal = Math.abs(currPress - lastPress);
+            if(pressVal < 0.2)
+                pressure = true;
+            else
+                pressure = false;
         }
     }
 
