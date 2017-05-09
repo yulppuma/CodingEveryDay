@@ -355,7 +355,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             acy = Math.abs(values[1]);
             acz = Math.abs(values[2]);
             Log.d("AC Z Values: ", "" + acz);
-            if((acy > 9.796 && acy < 9.818) && (acz < 0.06))
+            if((acy > 9.79 && acy < 9.818) && (acz < 0.1))
                 acc = true;
             else
                 acc = false;
