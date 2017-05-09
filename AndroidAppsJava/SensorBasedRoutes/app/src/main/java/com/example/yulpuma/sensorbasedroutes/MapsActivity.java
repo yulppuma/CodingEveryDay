@@ -68,7 +68,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextView decibelVal;
     TextView ac, lac, gyros, grav, press, decibel;
     Button recording;
-    boolean acc = false, gyro = false, pressure = false, gravity = false, linear = false;
+    boolean acc = false, gyro = false, pressure = false, gravity = false, linear = false, decib = false;
+    int counter = 0;
     double acx, acy, acz, lacx, lacy, lacz, gyrox, gyroy, gyroz, gravx, gravy, gravz, pressVal;
     DecimalFormat facx = new DecimalFormat("0.0"), facy = new DecimalFormat("0.0"), facz = new DecimalFormat("0.0"),
             flacx = new DecimalFormat("0.0"), flacy = new DecimalFormat("0.0"), flacz = new DecimalFormat("0.0"),
@@ -94,7 +95,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ac = (TextView) findViewById(R.id.ac);
         lac = (TextView) findViewById(R.id.lac);
         gyros = (TextView) findViewById(R.id.gyros);
-        grav = (TextView) findViewById(R.id.grav);
+        //grav = (TextView) findViewById(R.id.grav);
         press = (TextView) findViewById(R.id.press);
         sensManager = (SensorManager) getSystemService (Context.SENSOR_SERVICE);
         sSensor = sensManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -197,33 +198,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(mRecorder != null){
             dec = 20 * log10(mRecorder.getMaxAmplitude()/ 32767.0);
             double deci = (26 + dec) * 3;
-            decibelVal.setText("Decibel: " + deci);
-            if (dec < -21.0) {
-                options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
-            } else if (dec > -21.0 && dec < -15.0) {
-                options = new PolylineOptions().width(5).color(Color.GREEN).geodesic(true);
-                color = Color.GREEN;
-            } else if (dec > -15.0 && dec < -9.0) {
-                options = new PolylineOptions().width(5).color(Color.YELLOW).geodesic(true);
-            } else {
-                options = new PolylineOptions().width(5).color(Color.RED).geodesic(true);
+            if(deci > 58)
+                decib = true;
+            else
+                decib = false;
+            decibelVal.setText("Decibel: " + deci + " " + decib);
+        }
+        //points.add(latLng);
+        ac.setText("AC: " + acx + " " + acy + " "  + " " + " " + acz + " " + acc);
+        lac.setText("LAC: " + lacx + " " + lacy + " " + lacz + " " + linear);
+        press.setText("press: " + pressVal + " " + pressure);
+        gyros.setText("Gyro: " + gyrox + " " + gyroy + " " + gyroz + " " + gyro);
+        if (acc && linear && gyro && pressure) {
+            points.add(latLng);
+            decibelVal.setText("True");
+        }
+        ArrayList<LatLng> newPoints = new ArrayList<LatLng>();
+        double ax, ay, bx, by, cx, cy, dx, dy, lat, lon;
+        // For every point
+        for (int i = 2; i < points.size() - 2; i++) {
+            for (float t = 0; t < 1; t += 0.2) {
+                ax = (-points.get(i-2).latitude + 3 * points.get(i - 1).latitude - 3 * points.get(i).latitude + points.get(i + 1).latitude) / 6;
+                ay = (-points.get(i - 2).longitude + 3 * points.get(i - 1).longitude - 3 * points.get(i).longitude + points.get(i + 1).longitude) / 6;
+                bx = (points.get(i - 2).latitude - 2 * points.get(i - 1).latitude + points.get(i).latitude) / 2;
+                by = (points.get(i - 2).longitude - 2 * points.get(i - 1).longitude + points.get(i).longitude) / 2;
+                cx = (-points.get(i - 2).latitude + points.get(i).latitude) / 2;
+                cy = (-points.get(i - 2).longitude + points.get(i).longitude) / 2;
+                dx = (points.get(i - 2).latitude + 4 * points.get(i - 1).latitude + points.get(i).latitude) / 6;
+                dy = (points.get(i - 2).longitude + 4 * points.get(i - 1).longitude + points.get(i).longitude) / 6;
+                lat = ax * Math.pow(t + 0.1, 3) + bx * Math.pow(t + 0.1, 2) + cx * (t + 0.1) + dx;
+                lon = ay * Math.pow(t + 0.1, 3) + by * Math.pow(t + 0.1, 2) + cy * (t + 0.1) + dy;
+                newPoints.add(new LatLng(lat, lon));
             }
         }
-        points.add(latLng);
-        ac.setText("AC: " + facx.format(acx) + " " + acy + " " + facz.format(acz) + " " + acc);
-        lac.setText("LAC: " + flacx.format(lacx) + " " + flacy.format(lacy) + " " + flacz.format(lacz) + " " + linear);
-        grav.setText("grav: " + fgravx.format(gravx) + " " + gravy + " " + fgravz.format(gravz) + " " + gravity);
-        gyros.setText("gyro: " + fgyrox.format(gyrox) + " " + fgyroy.format(gyroy) + " " + fgyroz.format(gyroz) + " " + gyro);
-        press.setText("pressure: " + fpressVal.format(pressVal) + " " + currPress + " " + lastPress + " " + pressure);
+
         if(options == null)
             options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
-        for (int i = 0; i < points.size(); i++) {
-            LatLng point = points.get(i);
+        for (int i = 0; i < newPoints.size(); i++) {
+            LatLng point = newPoints.get(i);
             options.add(point);
         }
-        option.add(options);
-        if(acc && linear && gyro && gravity && pressure)
-            decibel.setText("True");
+        //option.add(options);
+        line = mMap.addPolyline(options);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
@@ -338,7 +354,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             acx = Math.abs(values[0]);
             acy = Math.abs(values[1]);
             acz = Math.abs(values[2]);
-            if(acx < 0.2 && acy < 9.8 && acz < 0.2)
+            Log.d("AC Z Values: ", "" + acz);
+            if((acy > 9.796 && acy < 9.818) && (acz < 0.06))
                 acc = true;
             else
                 acc = false;
@@ -348,20 +365,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             lacx = Math.abs(values[0]);
             lacy = Math.abs(values[1]);
             lacz = Math.abs(values[2]);
-            if(lacx < 0.2 && lacy < 0.2 && lacz < 0.2)
+            if(lacx < 0.5 && lacy < 0.2 && lacz < 0.25)
                 linear = true;
             else
                 linear = false;
-        }
-        else if (sensor.getType() == Sensor.TYPE_GRAVITY){
-            float[] values = event.values;
-            gravx = Math.abs(values[0]);
-            gravy = Math.abs(values[1]);
-            gravz = Math.abs(values[2]);
-            if(gravx < 0.2 && gravy < 9.8 && gravz < 0.2)
-                gravity = true;
-            else
-                gravity = false;
         }
         else if (sensor.getType() == Sensor.TYPE_GYROSCOPE){
             float[] values = event.values;
